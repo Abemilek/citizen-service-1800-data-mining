@@ -1,0 +1,31 @@
+# 
+# SKYTRAVEL NICARAGUA - DATA MINING
+# Dependencias para SQL Server 2022
+# 
+
+# Análisis de datos
+pandas
+numpy
+
+# Visualización
+matplotlib
+seaborn
+plotly
+
+# Machine Learning
+scikit-learn
+xgboost
+imbalanced-learn
+
+# 
+# CONEXIÓN A SQL SERVER (reemplaza psycopg2)
+# 
+pyodbc
+SQLAlchemy
+
+# Jupyter
+jupyter
+jupyterlab
+
+# Utilidades
+python-dotenv

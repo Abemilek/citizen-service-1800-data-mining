@@ -1,0 +1,24 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+
+# Docker / DB
+sqlvolume/
+*.mdf
+*.ldf
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
