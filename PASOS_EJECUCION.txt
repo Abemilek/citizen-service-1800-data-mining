@@ -1,0 +1,121 @@
+============================================================
+ SERVICIO CIUDADANO 1800 - PASO A PASO PARA EJECUTAR
+ Proyecto: citizen-service-1800-data-mining
+============================================================
+
+FORMA FACIL (RECOMENDADA):
+   Doble clic en EJECUTAR.cmd
+   Opcion 1 (EJECUTAR TODO) -> teclea S
+   Espera a que termine (la primera vez puede tardar 10-15 min)
+   Luego usa la opcion 7 para abrir Jupyter Lab
+
+
+============================================================
+FASE 1 - BASE DE DATOS (SQL)
+============================================================
+Se ejecuta "01 - DATAWAREHOUSE.SQL".
+Crea la base de datos ServicioCiudadanoDW y la tabla cruda v0_crudo.
+
+Comando manual:
+  sqlcmd -S "localhost\SQLEXPRESS" -E -i "01 - DATAWAREHOUSE.SQL"
+
+
+============================================================
+FASE 2 - GENERAR LOS DATOS CRUDOS (C#)
+============================================================
+IMPORTANTE: Los datos crudos (v0) SI se generan en SQL Server
+(se insertan en la tabla v0_crudo), NO en archivos.
+
+El programa C# "DataSetGenerator" crea 100,000 interacciones
+sinteticas con suciedad controlada (duplicados, nulos, etc.)
+y las inserta en la tabla v0_crudo.
+
+Comando manual:
+  cd DataSetGenerator\DataSetGenerator
+  dotnet run
+  (tarda de 2 a 5 minutos)
+
+
+============================================================
+FASE 3 - LIMPIEZA / GOBIERNO DE DATOS (SQL)
+============================================================
+Se ejecuta "02 - CREACION DE DATASETS.SQL".
+Crea la vista vw_v1_limpio con las reglas R-CAL (duplicados,
+mayusculas, nulos, rangos fuera de limite).
+
+Comando manual:
+  sqlcmd -S "localhost\SQLEXPRESS" -E -d ServicioCiudadanoDW -i "02 - CREACION DE DATASETS.SQL"
+
+
+============================================================
+FASE 4 - ENTORNO PYTHON
+============================================================
+Crea el entorno virtual y instala las librerias:
+
+  cd DataSetGenerator\citizen-analytics
+  python -m venv venv
+  venv\Scripts\activate
+  pip install -r requirements.txt
+
+
+============================================================
+FASE 5 - EXPORTAR A EXCEL (CARPETA data)
+============================================================
+Despues de generar los datos crudos y limpios, este paso crea:
+
+  data\v0_crudo.xlsx    -> datos crudos (100,000 filas aprox.)
+  data\v1_limpio.xlsx   -> datos ya limpios (vista vw_v1_limpio)
+
+Comando manual:
+  cd DataSetGenerator\citizen-analytics
+  venv\Scripts\python.exe exportar_excel.py
+
+Los archivos Excel quedan en la carpeta "data" del proyecto.
+
+
+============================================================
+FASE 6 - JUPYTER LAB (MODELADO)
+============================================================
+  cd DataSetGenerator\citizen-analytics
+  venv\Scripts\activate
+  jupyter lab
+
+Se abre el navegador. Entra a la carpeta "notebooks" y ejecuta
+EN ESTE ORDEN:
+
+  1) 00_Verificacion_Limpieza.ipynb   (antes vs despues de limpiar)
+  2) 01Prueba.ipynb                   (graficos de KPIs)
+  3) 03_modelado.ipynb                (XGBoost)
+  4) 03_modelado_correcto.ipynb       (modelo sin data leakage)
+  5) 04_comparacion_modelos.ipynb     (Random Forest vs XGBoost)
+
+NOTA: si abres Jupyter Lab por fuera de EJECUTAR.cmd, los notebooks
+no sabran a que SQL conectarse. Usa mejor la opcion 7 del menu, o
+activa el venv y ejecuta EJECUTAR.ps1 antes.
+
+
+============================================================
+AJUSTES REALIZADOS (para que funcione en TU PC)
+============================================================
+1. Program.cs: cadena de conexion cambiada a
+   Server=localhost\SQLEXPRESS con usuario sa.
+2. Notebooks 03_modelado.ipynb y 04_comparacion_modelos.ipynb:
+   la conexion "SERVER=db" (de Docker) se cambio para leer las
+   variables del .env / entorno (localhost\SQLEXPRESS).
+3. Creado DataSetGenerator\citizen-analytics\.env con los datos
+   de tu SQL Server local.
+4. Agregado "openpyxl" a requirements.txt (necesario para Excel).
+5. Creado exportar_excel.py (exporta v0_crudo y vw_v1_limpio a Excel).
+6. Creados EJECUTAR.ps1 y EJECUTAR.cmd (este menu automatico).
+
+
+============================================================
+RESUMEN DEL ORDEN
+============================================================
+1. 01 - DATAWAREHOUSE.SQL        (crea BD y tabla v0_crudo)
+2. dotnet run                    (genera 100,000 registros en SQL)
+3. 02 - CREACION DE DATASETS.SQL (crea vista vw_v1_limpio)
+4. venv + pip install -r requirements.txt
+5. python exportar_excel.py      (Excel en la carpeta data)
+6. jupyter lab                   (notebooks en orden 00, 01, 03, 03b, 04)
+============================================================

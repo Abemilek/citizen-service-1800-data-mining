@@ -29,3 +29,6 @@ jupyterlab
 
 # Utilidades
 python-dotenv
+
+# Exportación a Excel
+openpyxl

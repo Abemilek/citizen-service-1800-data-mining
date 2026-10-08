@@ -12,7 +12,7 @@ namespace DataSetGenerator
         const int SEED = 15;
         static Random rnd = new Random(SEED);
 
-        static string connectionString = "Server=localhost,1433;Database=ServicioCiudadanoDW;User Id=sa;Password=TuPassword123!;TrustServerCertificate=True;";
+        static string connectionString = "Server=localhost\\SQLEXPRESS;Database=ServicioCiudadanoDW;User Id=sa;Password=12345678;TrustServerCertificate=True;";
 
         static void Main(string[] args)
         {
