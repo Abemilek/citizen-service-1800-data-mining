@@ -1,5 +1,5 @@
 // ============================================================
-// SKYTRAVEL NICARAGUA - GENERADOR DE DATOS PARA DATA WAREHOUSE
+// citizen NICARAGUA - GENERADOR DE DATOS PARA DATA WAREHOUSE
 // Genera datos respetando los hallazgos del caso de estudio
 // Autor: Equipo de Analítica
 // Fecha: Septiembre 2026
@@ -11,7 +11,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace SkyTravelDataGenerator
+namespace citizenDataGenerator
 {
     class Program
     {
@@ -28,7 +28,7 @@ namespace SkyTravelDataGenerator
         
         // Cadena de conexión (ajustar según tu servidor)
         static string connectionString = 
-            @"Server=localhost;Database=SkyTravelDW;Integrated Security=True;TrustServerCertificate=True";
+            @"Server=localhost;Database=citizenDW;Integrated Security=True;TrustServerCertificate=True";
         
         // Semilla para reproducibilidad de datos
         static Random rnd = new Random(42);
@@ -129,7 +129,7 @@ namespace SkyTravelDataGenerator
         static void Main(string[] args)
         {
             Console.WriteLine("╔════════════════════════════════════════════════════════════╗");
-            Console.WriteLine("║   SKYTRAVEL NICARAGUA - GENERADOR DE DATOS PARA DW        ║");
+            Console.WriteLine("║   citizen NICARAGUA - GENERADOR DE DATOS PARA DW        ║");
             Console.WriteLine("╚════════════════════════════════════════════════════════════╝");
             Console.WriteLine($"\n📊 Configuración:");
             Console.WriteLine($"   • Reservas a generar: {seeds:N0}");

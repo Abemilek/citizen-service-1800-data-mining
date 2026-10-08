@@ -19,7 +19,7 @@ Antes de empezar, asegúrate de tener instalados estos programas en tu PC:
 
 1. Abre **SSMS** y conéctate a tu servidor local de SQL Server.
 2. Abre y ejecuta los scripts SQL que están en la raíz del proyecto en este orden estricto:
-   - 📂 Ejecuta `01 - DATAWAREHOUSE.SQL` (Esto creará la base de datos `SkyTravelDW` y sus tablas).
+   - 📂 Ejecuta `01 - DATAWAREHOUSE.SQL` (Esto creará la base de datos `citizenDW` y sus tablas).
    *Nota: No ejecutes todavía los scripts de la parte "02", primero necesitamos llenar la base de datos.*
 
 ### PASO 2: Generar los Datos (C#)
@@ -45,7 +45,7 @@ Antes de empezar, asegúrate de tener instalados estos programas en tu PC:
 
 1. En tu terminal, navega a la carpeta de análisis:
    ```cmd
-   cd ruta\al\proyecto\DataSetGenerator\skytravel-analytics
+   cd ruta\al\proyecto\DataSetGenerator\citizen-analytics
    ```
 2. Crea y activa tu entorno virtual:
    ```cmd

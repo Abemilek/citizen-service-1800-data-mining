@@ -16,8 +16,8 @@ pip --version
 
 
 # Crear carpeta del proyecto
-mkdir skytravel-analytics
-cd skytravel-analytics
+mkdir citizen-analytics
+cd citizen-analytics
 
 # Crear entorno virtual
 python -m venv venv
@@ -26,7 +26,7 @@ python -m venv venv
 # Windows:
 venv\Scripts\activate
 
-# Verás algo como: (venv) C:\...\skytravel-analytics>
+# Verás algo como: (venv) C:\...\citizen-analytics>
 
 
 ```text
@@ -94,7 +94,7 @@ crear .env
 # .env
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=skytravel_dw
+DB_NAME=citizen_dw
 DB_USER=analista
 DB_PASSWORD=tu_password_aqui
 DB_TYPE=postgresql  # o mysql, sqlserver
@@ -120,7 +120,7 @@ La forma clásica que se abre en tu navegador web (Chrome, Edge, etc.).
 Paso 1: Activa tu entorno virtual
 Abre tu terminal (CMD o PowerShell en Windows) y activa el entorno:
 ```
-cd skytravel-analytics
+cd citizen-analytics
 venv\Scripts\activate
 ```
 **Paso 2: Instala Jupyter**

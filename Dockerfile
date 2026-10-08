@@ -16,10 +16,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements y desanclar versiones para Python 3.13
-COPY DataSetGenerator/skytravel-analytics/requirements.txt ./requirements.txt
+COPY DataSetGenerator/citizen-analytics/requirements.txt ./requirements.txt
 RUN sed -i 's/==.*//g' requirements.txt && pip install --no-cache-dir -r requirements.txt
 
 # El volumen montará el código en /app
 EXPOSE 8888
 
-CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root", "--notebook-dir=/app/DataSetGenerator/skytravel-analytics"]
+CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root", "--notebook-dir=/app/DataSetGenerator/citizen-analytics"]

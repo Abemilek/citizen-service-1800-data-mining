@@ -1,5 +1,5 @@
 # 
-# SKYTRAVEL NICARAGUA - DATA MINING
+# citizen NICARAGUA - DATA MINING
 # Dependencias para SQL Server 2022
 # 
 

@@ -1,6 +1,6 @@
 # ============================================
 # src/database.py
-# SKYTRAVEL NICARAGUA - CONEXIÓN SQL SERVER 2022
+# citizen NICARAGUA - CONEXIÓN SQL SERVER 2022
 # Reemplaza la versión anterior de PostgreSQL
 # ============================================
 
@@ -19,7 +19,7 @@ def get_connection_string():
     Soporta autenticación SQL y autenticación de Windows.
     """
     server   = os.getenv('DB_SERVER', 'localhost')
-    database = os.getenv('DB_NAME', 'SkyTravelDW')
+    database = os.getenv('DB_NAME', 'citizenDW')
     driver   = os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server')
     user     = os.getenv('DB_USER', '')
     password = os.getenv('DB_PASSWORD', '')

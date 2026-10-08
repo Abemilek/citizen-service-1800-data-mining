@@ -1,13 +1,13 @@
 # EJEMPLO PRÁCTICO PASO A PASO: CREACIÓN DE KPIs
 
-Caso: SkyTravel Nicaragua - Agencia de Venta de Boletos Aéreos Aplicación del Framework GQM + SMART
+Caso: citizen Nicaragua - Agencia de Venta de Boletos Aéreos Aplicación del Framework GQM + SMART
 
 ## FASE 0: DATOS OBJETIVOS INICIALES (Lo que recibe el analista al llegar) CONTEXTO DEL CASO
 
 Información General de la Empresa
 
 Elemento: Empresa
-Descripción: SkyTravel Nicaragua S.A.
+Descripción: citizen Nicaragua S.A.
 
 Elemento: Giro
 Descripción: Agencia de venta de boletos aéreos (online y presencial)
@@ -31,7 +31,7 @@ Nota metodológica: Estos son los datos e informes que la empresa entrega al equ
 
 ### INFORME 1: Resumen Operativo de Reservas (Año 2024)
 
-Fuente: Sistema SaaS propio de SkyTravel
+Fuente: Sistema SaaS propio de citizen
 Granularidad: Mensual
 Total de registros: 120,000 reservas iniciadas en 2024
 
@@ -268,27 +268,27 @@ Ticket Promedio (USD): $325
 Fuente: Reportes IATA y Cámara de Turismo de Centroamérica
 
 Indicador: Tasa de abandono de reserva
-SkyTravel 2024: 58.5%
+citizen 2024: 58.5%
 Benchmark Sector: 45%
 Diferencia: +13.5 pp
 
 Indicador: Tasa de recompra a 12 meses
-SkyTravel 2024: 24%
+citizen 2024: 24%
 Benchmark Sector: 35%
 Diferencia: -11 pp
 
 Indicador: Ticket promedio internacional
-SkyTravel 2024: $520
+citizen 2024: $520
 Benchmark Sector: $480
 Diferencia: +$40
 
 Indicador: NPS (Net Promoter Score)
-SkyTravel 2024: 32
+citizen 2024: 32
 Benchmark Sector: 45
 Diferencia: -13 pts
 
 Indicador: % Clientes con ≥3 compras/año
-SkyTravel 2024: 9.4%
+citizen 2024: 9.4%
 Benchmark Sector: 18%
 Diferencia: -8.6 pp
 
@@ -449,14 +449,14 @@ Nota metodológica: como analista, examina los informes anteriores y descubre lo
 Hallazgos que emergen del análisis de los datos:
 
 * Hallazgo 1: Tasa de abandono de reservas preocupante Del Informe 1, los estudiantes pueden calcular: Total de reservas iniciadas en 2024: 120,000 Total de reservas pagadas: 40,800 Total de reservas abandonadas: 79,200 Tasa de abandono = 79,200 / 120,000 = 66%
-* Del Informe 6 (benchmark), el sector está en 45%. SkyTravel está 21 puntos porcentuales por encima del benchmark.
+* Del Informe 6 (benchmark), el sector está en 45%. citizen está 21 puntos porcentuales por encima del benchmark.
 * Conclusión del analista: "Hay un problema serio de conversión en el proceso de reserva. De cada 3 clientes que inician una reserva, 2 no la completan."
 * Hallazgo 2: El canal móvil es el principal responsable del abandono Del Informe 2, los estudiantes pueden observar: App Móvil: 74% de abandono (el peor canal) Web Desktop: 47% de abandono Sucursal Física: 28% de abandono (el mejor canal)
 * Conclusión del analista: "El canal móvil concentra el mayor problema de abandono. Representa el 40% de las reservas iniciadas pero tiene la tasa de abandono más alta."
 * Hallazgo 3: Vuelos internacionales abandonados 2.1x más que nacionales Del Informe 5: Vuelos internacionales: 71% de abandono Vuelos nacionales: 49% de abandono
 * Conclusión del analista: "Los vuelos internacionales tienen un proceso de decisión más complejo y esto se refleja en mayor abandono."
 * Hallazgo 4: Baja tasa de recompra Del Informe 3, los estudiantes pueden calcular: Total de clientes activos en 12 meses: 47,250 Clientes con ≥2 compras: 11,340 Tasa de recompra = 11,340 / 47,250 = 24%
-* Del Informe 6 (benchmark), el sector está en 35%. SkyTravel está 11 puntos por debajo.
+* Del Informe 6 (benchmark), el sector está en 35%. citizen está 11 puntos por debajo.
 * Conclusión del analista: "Solo 1 de cada 4 clientes regresa a comprar. Estamos perdiendo la oportunidad de generar ingresos recurrentes."
 * Hallazgo 5: Los clientes que compran con promoción NO son leales Del Informe 3, segmento "Ocasional Promo": 5,420 clientes, pero solo 11% de recompra (el más bajo) Representan 11.5% de la base pero aportan poco a ingresos recurrentes
 * Conclusión del analista: "Las promociones atraen clientes pero no los fidelizan. Hay un problema de calidad en la adquisición."
@@ -470,16 +470,16 @@ Conclusión del analista: "Hay una ruta específica que concentra un tercio del 
 
 ### PASO 1: OBJETIVO ESTRATÉGICO (GOAL)
 
-**Sesión de trabajo con el director Comercial de SkyTravel**
+**Sesión de trabajo con el director Comercial de citizen**
 
 *"Analizando los informes que nos entregaron, encontramos varios problemas graves. El más urgente es que estamos perdiendo 2 de cada 3 reservas que se inician, y eso nos cuesta casi medio millón de dólares al año. Además, los clientes que compran una vez no regresan. Si seguimos así, en 2026 podríamos perder una sucursal. Necesitamos que nos ayuden a entender qué está pasando y cómo solucionarlo."*
-— Director Comercial, SkyTravel Nicaragua
+— Director Comercial, citizen Nicaragua
 
 Plantilla completada:
 
 **OBJETIVO ESTRATÉGICO (GOAL)**
 
-Negocio/Organización: SkyTravel Nicaragua S.A.
+Negocio/Organización: citizen Nicaragua S.A.
 
 Objetivo estratégico:
 "Incrementar los ingresos anuales en un 15% durante el año 2026, mediante la reducción del abandono de reservas online y el aumento de la recompra de clientes existentes."
@@ -625,7 +625,7 @@ La fórmula tiene numerador (reservas no pagadas en 24h) y denominador (total de
 
 [M] Measurable: [✓] Sí
 
-Los datos existen en el sistema SaaS propio de SkyTravel. Cada reserva tiene estado, fecha de inicio y fecha de pago. Se puede calcular automáticamente.
+Los datos existen en el sistema SaaS propio de citizen. Cada reserva tiene estado, fecha de inicio y fecha de pago. Se puede calcular automáticamente.
 
 [A] Achievable: [✓] Sí
 
@@ -695,7 +695,7 @@ Acción si se supera el umbral:
 
 Línea Base: 22%
 Periodo de referencia: Julio 2024 - Junio 2025
-Fuente del histórico: DW de SkyTravel
+Fuente del histórico: DW de citizen
 Dato verificado: De 45,000 clientes activos, solo 9,900 realizaron una segunda compra en 12 meses.
 
 Meta: Aumentar a 30% en 12 meses (al cierre de 2026)

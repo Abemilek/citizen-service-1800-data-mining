@@ -1,5 +1,5 @@
 -- ============================================================
--- SKYTRAVEL NICARAGUA - DATA MINING
+-- citizen NICARAGUA - DATA MINING
 -- Dataset CORREGIDO: SIN Data Leakage (Variables congeladas en el tiempo)
 -- PROYECTO A: Reducir TAR de 66% a 50%
 -- COMPATIBLE CON: SQL Server 2016+
