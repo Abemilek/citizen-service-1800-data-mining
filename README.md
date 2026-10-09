@@ -7,7 +7,9 @@ Proyecto de minería de datos sobre interacciones de un centro de atención ciud
 ## Requisitos
 
 - Docker Engine y Docker Compose v2 (recomendado), **o**
-- SQL Server, .NET 10, Python 3.10–3.12 y Microsoft ODBC Driver 18 para SQL Server.
+- SQL Server, .NET SDK 10.0.401, Python 3.11.16 y Microsoft ODBC Driver 18 para SQL Server.
+
+Las versiones recomendadas de las herramientas están declaradas en `global.json` (.NET SDK) y `.python-version` (Python). `global.json` selecciona el SDK de .NET, no el runtime destino ni Python; con `rollForward: disable` se requiere exactamente la versión declarada. La imagen .NET de compilación y la imagen Python usan esas mismas versiones.
 
 ## Ejecución recomendada: Docker Compose
 

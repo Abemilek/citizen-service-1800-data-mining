@@ -1,11 +1,11 @@
 # Build wheel/dependency layer separately so build tooling never ships in runtime.
-FROM python:3.11-slim-bookworm AS python-deps
+FROM python:3.11.16-slim-bookworm AS python-deps
 WORKDIR /build
 COPY DataSetGenerator/servicio-ciudadano-analytics/requirements.txt ./requirements.txt
 RUN python -m pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # Minimal Python runtime plus only the native libraries needed at runtime.
-FROM python:3.11-slim-bookworm AS runtime
+FROM python:3.11.16-slim-bookworm AS runtime
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
