@@ -2,7 +2,7 @@
 # Imagen del generador C# (.NET 10) - Servicio Ciudadano 1800
 # Compila en una imagen SDK y ejecuta en la imagen runtime.
 # ============================================================
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.401 AS build
 WORKDIR /src
 
 COPY DataSetGenerator.csproj ./
