@@ -1,132 +1,44 @@
+# Notas del generador · Servicio Ciudadano 1800
 
-INSTALACIÓN DE PYTHON Y ENTORNO VIRTUAL
-1.1. Instalar Python
-Opción A: Python oficial (Recomendado)
+Este documento conserva las instrucciones específicas del generador de datos compartidas para el curso. El punto de entrada actualizado para instalar y ejecutar el proyecto completo es el [README de la raíz](../README.md).
 
-# Descargar desde: https://www.python.org/downloads/
-# Versión recomendada: 3.10 o 3.11
-# Durante la instalación: MARCAR "Add Python to PATH"
+## Generador C# y MINI ETL
 
+El generador reproduce las interacciones con la semilla `1800`, introduce defectos de calidad y escribe:
 
+- `data/v0_crudo.csv`: datos antes del MINI ETL.
+- `data/v1_limpio.csv`: datos después de deduplicar, estandarizar y validar rangos.
 
-python --version
-# Debe mostrar: Python 3.10.x o superior
+Desde la raíz del proyecto, con .NET 10:
 
-pip --version
-
-
-# Crear carpeta del proyecto
-mkdir citizen-analytics
-cd citizen-analytics
-
-# Crear entorno virtual
-python -m venv venv
-
-# Activar entorno virtual
-# Windows:
-venv\Scripts\activate
-
-# Verás algo como: (venv) C:\...\citizen-analytics>
-
-
-```text
-
-# Análisis de datos
-pandas==2.1.0
-numpy==1.24.3
-
-# Visualización
-matplotlib==3.7.2
-seaborn==0.12.2
-plotly==5.15.0
-
-# Machine Learning
-scikit-learn==1.3.0
-xgboost==1.7.6
-imbalanced-learn==0.11.0
-
-# Conexión a base de datos (elige según tu DB)
-# PostgreSQL:
-psycopg2-binary==2.9.7
-# MySQL:
-# mysql-connector-python==8.1.0
-# SQL Server:
-# pyodbc==4.0.39
-
-# Jupyter (opcional pero recomendado)
-jupyter==1.0.0
-jupyterlab==4.0.5
-
-# Utilidades
-python-dotenv==1.0.0
-
+```bash
+dotnet run --project DataSetGenerator/DataSetGenerator -c Release
 ```
 
-pip install -r requirements.txt
+Para crear solo los CSV, sin SQL Server:
 
-```py
-# Archivo: verificar_instalacion.py
-import pandas as pd
-import numpy as np
-import sklearn
-import xgboost as xgb
-import matplotlib
-import seaborn as sns
-
-print("✅ pandas:", pd.__version__)
-print("✅ numpy:", np.__version__)
-print("✅ scikit-learn:", sklearn.__version__)
-print("✅ xgboost:", xgb.__version__)
-print("✅ matplotlib:", matplotlib.__version__)
-print("✅ seaborn:", sns.__version__)
-print("\n🎉 Todas las librerías instaladas correctamente!")
+```bash
+SOLO_CSV=1 dotnet run --project DataSetGenerator/DataSetGenerator -c Release
 ```
 
-python test.py
+Para ajustar la cantidad y mantener una semilla reproducible:
 
-
-configurar proyecto
-
-crear .env
-
-```env
-# .env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=citizen_dw
-DB_USER=analista
-DB_PASSWORD=tu_password_aqui
-DB_TYPE=postgresql  # o mysql, sqlserver
+```bash
+N_REGISTROS=30000 SEMILLA=1800 dotnet run --project DataSetGenerator/DataSetGenerator -c Release
 ```
 
+En PowerShell, define las variables con `$env:SOLO_CSV = "1"`, `$env:N_REGISTROS = "30000"` o `$env:SEMILLA = "1800"` antes de ejecutar `dotnet run`.
 
-**EJECUTAR**
-# 1. Activar entorno virtual
-venv\Scripts\activate
+## Analítica y notebooks
 
-# 2. Verificar instalación
-python verificar_instalacion.py
+El proyecto Python y sus instrucciones están en `servicio-ciudadano-analytics/`. Sus notebooks cubren:
 
-# 3. Probar conexión a SQL Server
-python test_conexion.py
+| Notebook | Propósito |
+| --- | --- |
+| `01Prueba.ipynb` | Prueba de conexión al Data Warehouse |
+| `03_modelado.ipynb` | Línea base con el dataset sucio (v0) |
+| `03_modelado_correcto.ipynb` | Modelo con el dataset limpio (v1) y acciones |
+| `04_comparacion_modelos.ipynb` | Efecto de la limpieza (v0 frente a v1) |
+| `06_modelos.ipynb` | Comparación de ocho algoritmos |
 
-# 4. Cargar datos en Python
-python cargar_datos.py
-
-**OPCIÓN 2: JupyterLab / Jupyter Notebook (Navegador)**
-
-La forma clásica que se abre en tu navegador web (Chrome, Edge, etc.).
-Paso 1: Activa tu entorno virtual
-Abre tu terminal (CMD o PowerShell en Windows) y activa el entorno:
-```
-cd citizen-analytics
-venv\Scripts\activate
-```
-**Paso 2: Instala Jupyter**
-```
-pip install jupyterlab
-```
-**Paso 3: Inicia el servidor**
-
-jupyter lab
-
+Para generar datasets SQL/KPI y abrirlos, consulta la sección de ejecución local del [README](../README.md).

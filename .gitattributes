@@ -1,0 +1,28 @@
+# Normalize text files in the repository; prevent OS-specific line endings.
+* text=auto
+
+# Keep source, configuration, documentation, SQL, and notebooks LF on checkout.
+*.cs       text eol=lf
+*.csproj   text eol=lf
+*.csv      text eol=lf
+Dockerfile text eol=lf
+*.ipynb    text eol=lf
+*.json     text eol=lf
+*.md       text eol=lf
+*.py       text eol=lf
+*.sh       text eol=lf
+*.sql      text eol=lf
+*.txt      text eol=lf
+*.yaml     text eol=lf
+*.yml      text eol=lf
+.dockerignore text eol=lf
+.env.example text eol=lf
+.gitignore text eol=lf
+compose.yaml text eol=lf
+
+# Preserve binary assets without line-ending conversion.
+*.dll  binary
+*.pdb  binary
+*.pdf  binary
+*.png  binary
+*.zip  binary

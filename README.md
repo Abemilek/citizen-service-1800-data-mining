@@ -1,71 +1,122 @@
-# Servicio Ciudadano 1800 - Data Mining Project (Case 15)
+# Servicio Ciudadano 1800 · Caso 15
 
-This repository contains a complete Data Mining pipeline designed to analyze and predict customer re-contact rates for "Servicio Ciudadano 1800". The project implements a CRISP-DM methodology, featuring synthetic data generation (in C#), Data Government and ETL processes (in SQL Server), and Exploratory Data Analysis & Predictive Modeling (in Python/Jupyter).
+Proyecto de minería de datos sobre interacciones de un centro de atención ciudadana. El flujo genera registros reproducibles, simula problemas de calidad, aplica un MINI ETL, carga un Data Warehouse en SQL Server, calcula KPI y compara modelos para predecir el recontacto dentro de siete días.
 
-## 🚀 Recommended Setup: Using Docker (All platforms)
+> Los datos se generan artificialmente a partir de cifras de referencia y supuestos de diseño. Los resultados de los modelos son demostrativos; no describen el rendimiento real de un centro de atención.
 
-The easiest and recommended way to run this project is using Docker. This will automatically spin up the SQL Server database, run the C# generator to insert 100,000 records, apply the ETL rules, and start Jupyter Lab.
+## Requisitos
 
-### Prerequisites
-- Docker and Docker Compose installed.
+- Docker Engine y Docker Compose v2 (recomendado), **o**
+- SQL Server, .NET 10, Python 3.10–3.12 y Microsoft ODBC Driver 18 para SQL Server.
 
-### Steps
-1. Open your terminal in the root directory of this project.
-2. Run the following command:
-   ```bash
-   docker compose up --build -d
-   ```
-3. **Wait 1-2 minutes** for the C# generator to finish inserting the 100,000 records into the database. You can monitor the progress by running:
-   ```bash
-   docker compose logs -f db-init
-   ```
-4. Once it says "¡Proceso completado exitosamente!", open your browser and go to:
-   👉 **http://localhost:8888/**
-5. Look at your terminal for the Jupyter **token** (it will be printed in the logs of the `jupyter` container). You can find it easily by running:
-   ```bash
-   docker compose logs jupyter | grep token
-   ```
-6. Paste the token into the Jupyter login page, and you are ready to open the `.ipynb` notebooks!
+## Ejecución recomendada: Docker Compose
 
----
+Desde la raíz del proyecto, prepara el archivo de configuración y define una contraseña única para SQL Server:
 
-## 🪟 Alternative Setup: Local Windows (No Docker)
+```bash
+cp .env.example .env
+```
 
-If you prefer to run the project locally without Docker, you will need SQL Server, .NET 10.0 SDK, and Python installed on your Windows machine.
+Edita `.env` y reemplaza `DB_PASSWORD`. Ajusta `APP_UID` y `APP_GID` a los identificadores de tu usuario (`id -u` y `id -g` en Linux/macOS) para que los contenedores puedan escribir los CSV y notebooks montados.
 
-### Prerequisites
-- Microsoft SQL Server Management Studio (SSMS) or Azure Data Studio.
-- .NET 10.0 SDK.
-- Python 3.10+ and Jupyter Lab.
+Construye y arranca todo el flujo:
 
-### Steps
+```bash
+docker compose up --build
+```
 
-#### 1. Database Setup
-1. Open SQL Server Management Studio (SSMS).
-2. Execute the script `01 - DATAWAREHOUSE.SQL` to create the `ServicioCiudadanoDW` database and the `v0_crudo` table.
-3. Open `DataSetGenerator/DataSetGenerator/Program.cs` and update the `connectionString` to point to your local Windows SQL Server instance (e.g., `Server=localhost;Integrated Security=true;...`).
+Compose inicia SQL Server, prepara el Data Warehouse, genera y limpia los datos, crea los datasets de minería y finalmente inicia JupyterLab. Abre <http://localhost:8888>; el token de acceso aparece en:
 
-#### 2. Data Generation
-1. Open a PowerShell/CMD terminal inside the `DataSetGenerator/DataSetGenerator` folder.
-2. Run the C# generator:
-   ```cmd
-   dotnet run
-   ```
-   *Wait until it finishes generating the 100,000 records.*
+```bash
+docker compose logs jupyter
+```
 
-#### 3. ETL and Data Government
-1. Go back to SSMS and execute the script `02 - CREACION DE DATASETS.SQL`.
-2. This will create the view `vw_v1_limpio` containing the cleaned data.
+Los puertos de Jupyter y SQL Server solo se publican en `127.0.0.1`. Los CSV generados aparecen en `data/`, una carpeta ignorada por Git. La base de datos persiste en el volumen `sqlserver_data`.
 
-#### 4. Python Modeling
-1. Open a terminal in the root folder of this project.
-2. (Optional) Create a virtual environment: `python -m venv venv` and activate it.
-3. Install the required Python packages:
-   ```cmd
-   pip install pandas pyodbc scikit-learn matplotlib seaborn jupyterlab
-   ```
-4. Start Jupyter Lab:
-   ```cmd
-   jupyter lab
-   ```
-5. Inside the notebooks, update the `connection_string` variable to match your local Windows SQL Server credentials, and run all cells.
+Puedes ajustar el número de registros y la semilla desde `.env`, por ejemplo `N_REGISTROS=30000` y `SEMILLA=1800`. Para detener el proyecto y conservar la base de datos:
+
+```bash
+docker compose down
+```
+
+Para borrar también la base persistida y comenzar desde cero:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+`down -v` elimina permanentemente los datos del volumen de SQL Server.
+
+## Ejecución sin Docker
+
+Necesitas SQL Server en `localhost:1433`, .NET 10, Python 3.10–3.12 y ODBC Driver 18. Configura las credenciales para la conexión local en `DataSetGenerator/servicio-ciudadano-analytics/.env` (ese archivo está excluido de Git). Con un certificado local autofirmado puedes usar `DB_TRUST_CERT=yes` durante el desarrollo; para un entorno real, configura un certificado confiable y `DB_TRUST_CERT=no`.
+
+### 1. Instalar dependencias Python
+
+```bash
+cd DataSetGenerator/servicio-ciudadano-analytics
+python -m venv venv
+# Linux/macOS:
+source venv/bin/activate
+# Windows PowerShell:
+# .\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### 2. Configurar la conexión
+
+En Linux/macOS, exporta las variables para que Python y el generador .NET usen la misma conexión:
+
+```bash
+export DB_HOST=localhost
+export DB_PORT=1433
+export DB_NAME=ServicioCiudadano1800DW
+export DB_USER=sa
+export DB_PASSWORD='tu-contraseña-local'
+export DB_TRUST_CERT=yes
+```
+
+En Windows PowerShell, define los mismos valores con `$env:DB_HOST = "localhost"`, `$env:DB_PORT = "1433"`, `$env:DB_NAME = "ServicioCiudadano1800DW"`, `$env:DB_USER = "sa"`, `$env:DB_PASSWORD = "tu-contraseña-local"` y `$env:DB_TRUST_CERT = "yes"`.
+
+### 3. Crear el esquema y generar/cargar interacciones
+
+Desde la carpeta de analítica, inicializa las tablas y después vuelve a la raíz del proyecto para correr el generador:
+
+```bash
+python scripts/init_dw.py
+cd ../..
+dotnet run --project DataSetGenerator/DataSetGenerator -c Release
+```
+
+El generador crea `data/v0_crudo.csv` y `data/v1_limpio.csv`, carga los datos en SQL Server y calcula los KPI. Para generar únicamente los CSV, sin conectar a SQL Server:
+
+```bash
+SOLO_CSV=1 dotnet run --project DataSetGenerator/DataSetGenerator -c Release
+```
+
+En PowerShell usa `$env:SOLO_CSV = "1"` antes del comando. Puedes cambiar el tamaño con `N_REGISTROS` y la semilla con `SEMILLA`.
+
+### 4. Crear datasets de minería y abrir notebooks
+
+```bash
+cd DataSetGenerator/servicio-ciudadano-analytics
+python scripts/crear_datasets.py
+jupyter lab
+```
+
+Abre la carpeta `notebooks/` en JupyterLab. El notebook `06_modelos.ipynb` compara ocho algoritmos; los demás cubren conexión, entrenamiento inicial, modelado con datos limpios y comparación antes/después del MINI ETL.
+
+## Estructura principal
+
+- `compose.yaml`: servicios, volúmenes, puertos y configuración local.
+- `Dockerfile` y `DataSetGenerator/DataSetGenerator/Dockerfile`: imágenes de analítica y generador .NET.
+- `sql/`: scripts de inicialización, datasets de minería y KPI en orden de ejecución.
+- `DataSetGenerator/DataSetGenerator/`: generador C# y MINI ETL.
+- `DataSetGenerator/servicio-ciudadano-analytics/`: utilidades Python y notebooks.
+- `data/`: CSV generados; no se incluyen en Git.
+- `DataSetGenerator/INSTALCION.MD`: notas específicas del generador y material de referencia del curso.
+
+## Seguridad y alcance
+
+No subas `.env` ni credenciales. La configuración Compose ejecuta los procesos de analítica y generación sin root, limita sus permisos y protege la contraseña mediante un secret. Este Compose está pensado para desarrollo local; producción requiere, entre otras cosas, credenciales SQL de mínimo privilegio, certificado TLS confiable, backups y un gestor de secretos apropiado.

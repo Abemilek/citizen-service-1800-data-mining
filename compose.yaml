@@ -1,0 +1,128 @@
+name: ejemplomineria
+
+x-db-environment: &db-environment
+  DB_HOST: sqlserver
+  DB_PORT: "1433"
+  DB_NAME: ${DB_NAME:-ServicioCiudadano1800DW}
+  DB_USER: sa
+  DB_AUTH: sql
+  DB_TRUST_CERT: "yes" # Local development certificate only; use a trusted SQL certificate outside this stack.
+  DB_PASSWORD_FILE: /run/secrets/db_password
+
+x-python-app: &python-app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: ejemplomineria-analytics:local
+  init: true
+  user: "${APP_UID:-1000}:${APP_GID:-1000}"
+  read_only: true
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,size=256m
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  environment:
+    <<: *db-environment
+  secrets:
+    - db_password
+  depends_on:
+    sqlserver:
+      condition: service_healthy
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_MEMORY_LIMIT_MB: ${MSSQL_MEMORY_LIMIT_MB:-1536}
+    entrypoint: ["/bin/bash", "-ec"]
+    command: >-
+      test -s /run/secrets/db_password;
+      export MSSQL_SA_PASSWORD="$$(cat /run/secrets/db_password)";
+      exec /opt/mssql/bin/launch_sqlservr.sh /opt/mssql/bin/sqlservr
+    ports:
+      - "127.0.0.1:${SQL_HOST_PORT:-1433}:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    secrets:
+      - db_password
+    mem_limit: ${SQL_CONTAINER_MEMORY:-2g}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  dw-init:
+    <<: *python-app
+    command: ["python", "scripts/init_dw.py"]
+    restart: "no"
+
+  generador:
+    build:
+      context: ./DataSetGenerator/DataSetGenerator
+      dockerfile: Dockerfile
+    image: ejemplomineria-generador:local
+    init: true
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=128m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      <<: *db-environment
+      N_REGISTROS: ${N_REGISTROS:-100000}
+      SEMILLA: ${SEMILLA:-1800}
+      DATA_DIR: /data
+    secrets:
+      - db_password
+    volumes:
+      - ./data:/data
+    depends_on:
+      dw-init:
+        condition: service_completed_successfully
+    restart: "no"
+
+  datasets:
+    <<: *python-app
+    command: ["python", "scripts/crear_datasets.py"]
+    restart: "no"
+
+  jupyter:
+    <<: *python-app
+    command:
+      - jupyter
+      - lab
+      - --ip=0.0.0.0
+      - --port=8888
+      - --no-browser
+      - --ServerApp.root_dir=/app
+    ports:
+      - "127.0.0.1:${JUPYTER_HOST_PORT:-8888}:8888"
+    volumes:
+      - ./data:/app/data
+      - ./DataSetGenerator/servicio-ciudadano-analytics/notebooks:/app/notebooks
+    depends_on:
+      datasets:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+
+secrets:
+  db_password:
+    environment: DB_PASSWORD
