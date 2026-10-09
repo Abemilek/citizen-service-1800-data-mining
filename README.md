@@ -117,6 +117,10 @@ Abre la carpeta `notebooks/` en JupyterLab. El notebook `06_modelos.ipynb` compa
 - `data/`: CSV generados; no se incluyen en Git.
 - `DataSetGenerator/INSTALCION.MD`: notas específicas del generador y material de referencia del curso.
 
+## Integración continua
+
+GitHub Actions ejecuta el flujo de CI definido en `.github/workflows/ci.yml` en cada `push`, pull request y ejecución manual. Comprueba la sintaxis de Python y el formato JSON de los notebooks, valida la configuración de Compose y construye las imágenes Python y .NET. Las compilaciones no arrancan SQL Server ni necesitan credenciales reales.
+
 ## Seguridad y alcance
 
 No subas `.env` ni credenciales. La configuración Compose ejecuta los procesos de analítica y generación sin root, limita sus permisos y protege la contraseña mediante un secret. Este Compose está pensado para desarrollo local; producción requiere, entre otras cosas, credenciales SQL de mínimo privilegio, certificado TLS confiable, backups y un gestor de secretos apropiado.

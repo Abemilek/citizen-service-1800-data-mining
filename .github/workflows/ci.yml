@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-build:
+    name: Validate and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Compose requires this value to resolve its environment-backed secret.
+      # The job only validates configuration/builds images; it never starts SQL Server.
+      DB_PASSWORD: CiOnly-NotARealCredential-1800
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pinned checkout release
+
+      - name: Check Python syntax
+        run: python3 -m compileall -q DataSetGenerator/servicio-ciudadano-analytics
+
+      - name: Validate notebook JSON
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          notebooks = sorted(Path("DataSetGenerator/servicio-ciudadano-analytics/notebooks").glob("*.ipynb"))
+          if not notebooks:
+              raise SystemExit("No notebooks found")
+          for notebook in notebooks:
+              with notebook.open(encoding="utf-8") as file:
+                  json.load(file)
+          print(f"Validated {len(notebooks)} notebooks")
+          PY
+
+      - name: Validate Compose configuration
+        run: docker compose config --quiet
+
+      - name: Build application images
+        run: docker compose build dw-init generador
